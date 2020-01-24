@@ -3,7 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 // import Explore from "@material-ui/icons/Explore";
 // import Typography from "@material-ui/core/Typography";
 
-const NoContent = ({ classes }) => <div>NoContent</div>;
+const NoContent = ({ classes }) => <div>Click anywhere on the map to add a Pin</div>;
 
 const styles = theme => ({
   root: {

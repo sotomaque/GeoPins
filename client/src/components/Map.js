@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import ReactMapGL, { NavigationControl, Marker } from 'react-map-gl';
 import { withStyles } from "@material-ui/core/styles";
 import PinIcon from './PinIcon';
+import Blog from './Blog';
 // import Button from "@material-ui/core/Button";
 // import Typography from "@material-ui/core/Typography";
 // import DeleteIcon from "@material-ui/icons/DeleteTwoTone";
@@ -17,6 +18,7 @@ const Map = ({ classes }) => {
   const { state, dispatch } = useContext(Context)
   const [viewport, setViewport] = useState(INITIAL_VIEWPORT)
   const [userPosition, setUserPosition] = useState(null);
+
   useEffect(() => {
     getUserPosition()
   }, []);
@@ -56,6 +58,7 @@ const Map = ({ classes }) => {
         onClick={handleMapClick}
         {...viewport}
       >
+        
         {/* Navigation Control */}
         <div className={classes.navigationControl}>
           <NavigationControl
@@ -87,6 +90,9 @@ const Map = ({ classes }) => {
             </Marker>
         )}
       </ReactMapGL>
+
+      {/* Blog Area to add Pin Content  */}
+      <Blog />
     </div>
   );
 };
@@ -95,6 +101,7 @@ const styles = {
   root: {
     display: "flex",
     position: "absolute",
+    maxWidth: "100vw",
     top: 64,
   },
   rootMobile: {
