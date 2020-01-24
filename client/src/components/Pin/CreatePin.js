@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
@@ -8,7 +8,31 @@ import LandscapeIcon from "@material-ui/icons/LandscapeOutlined";
 import ClearIcon from "@material-ui/icons/Clear";
 import SaveIcon from "@material-ui/icons/SaveTwoTone";
 
+import Context from '../../context';
+
 const CreatePin = ({ classes }) => {
+
+  const { dispatch } = useContext(Context);
+
+  const [title, setTitle] = useState("");
+  const [image, setImage] = useState("");
+  const [content, setContent] = useState("");
+
+  const handleDeleteDraft = () => {
+
+    // clear local state
+    setTitle("")
+    setImage("")
+    setContent("")
+
+    // clear global state (draft pin)
+    dispatch({ type: "DELETE_DRAFT" })
+  }
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    console.log({title, image, content})
+  }
   return (
     <form className={classes.form}>
       <Typography
@@ -23,15 +47,18 @@ const CreatePin = ({ classes }) => {
           name="tite"
           label="title"
           placeholder="insert pin title"
+          onChange={ e => setTitle(e.target.value) }
         />
         <input
           accept="image/*"
           id="image"
           type="file"
           className={classes.input}
+          onChange={ e => setImage(e.target.files[0])}
         />
         <label htmlFor="image">
           <Button
+            style={{color: image && "green" }}
             component="span"
             size="small"
             className={classes.button}
@@ -49,12 +76,14 @@ const CreatePin = ({ classes }) => {
           margin="normal"
           fullWidth
           variant="outlined"
+          onChange={ e => setContent(e.target.value)}
         />
         <div>
           <Button
             variant="contained"
             color="primary"
             className={classes.button}
+            onClick={handleDeleteDraft}
           >
             <ClearIcon className={classes.leftIcon} />Discard
           </Button>
@@ -63,6 +92,8 @@ const CreatePin = ({ classes }) => {
             variant="contained"
             color="secondary"
             className={classes.button}
+            disabled={!title.trim() || !content.trim() || !image}
+            onClick={handleSubmit}
           >
             Submit<SaveIcon className={classes.rightIcon} />
           </Button>
