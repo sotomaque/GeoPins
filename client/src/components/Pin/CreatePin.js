@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import axios from 'axios';
 import { withStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
@@ -29,12 +30,39 @@ const CreatePin = ({ classes }) => {
     dispatch({ type: "DELETE_DRAFT" })
   }
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    console.log({title, image, content})
+  const handleImageUpload = async () => {
+    // create form data
+    const data = new FormData();
+    // append the image we have stored in state as a file to data
+    data.append("file", image);
+    // upload preset is what cloudinary created for us when we
+    // enabled unsigned uploading
+    data.append("upload_preset", "mibi0rzt");
+    // append cloudinary cloud name
+    data.append("cloud_name", "dfddbhcyo");
+
+    // make http request with axios
+    const res = await axios.post(
+      "https://api.cloudinary.com/v1_1/dfddbhcyo/image/upload",
+      data
+    );
+
+    return res.data.url
   }
+
+  const handleSubmit = async event => {
+    // prevent screen from auto refreshing upon submit
+    event.preventDefault();
+    
+    // test image upload
+    const url = await handleImageUpload();
+
+    console.log({title, image, url, content})
+  }
+
   return (
     <form className={classes.form}>
+      {/* title */}
       <Typography
         className={classes.alignCenter}
         component="h2"
@@ -42,13 +70,16 @@ const CreatePin = ({ classes }) => {
         color="secondary">
         <LandscapeIcon className={classes.iconLarge} /> Pin a Location
       </Typography>
+      {/* input div (first row) */}
       <div>
+        {/* pin title  */}
         <TextField 
           name="tite"
           label="title"
           placeholder="insert pin title"
           onChange={ e => setTitle(e.target.value) }
         />
+        {/* image input  */}
         <input
           accept="image/*"
           id="image"
@@ -67,6 +98,7 @@ const CreatePin = ({ classes }) => {
           </Button>
         </label>
       </div>
+      {/* input div (second row)  */}
       <div className={classes.contentField}>
         <TextField
           name="content"
@@ -78,6 +110,7 @@ const CreatePin = ({ classes }) => {
           variant="outlined"
           onChange={ e => setContent(e.target.value)}
         />
+        {/* save / discard buttons  */}
         <div>
           <Button
             variant="contained"
